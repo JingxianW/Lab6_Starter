@@ -1,8 +1,9 @@
 class RecipeCard extends HTMLElement {
   constructor() {
     // Part 1 Expose - TODO
-
     // You'll want to attach the shadow DOM here
+    super()
+    const shadow = this.attachShadow({mode: 'open'})
   }
 
   set data(data) {
@@ -100,9 +101,103 @@ class RecipeCard extends HTMLElement {
     // created in the constructor()
 
     // Part 1 Expose - TODO
+
+    // attach the root element to the shadow DOM
+    this.shadowRoot.append(card)
+    // attach the styles to the shadow DOM
+    this.shadowRoot.append(styleElem)
+
+    // create all the elements
+    const recipeImg = document.createElement('img')
+    const recipeTitle = document.createElement('p')
+    const titlehref = document.createElement('a')
+    const recipeOrgnization = document.createElement('p')
+    const recipeRating = document.createElement('div')
+    const ratingInfo = document.createElement('span')
+    const recipeComment = document.createElement('span')
+    const starImg = document.createElement('img')
+    const cookingTime = document.createElement('time')
+    const ingredients = document.createElement('p');
+
+    // set images for recipes
+    const img = searchForKey(data, 'thumbnail')
+    if(img) {
+       recipeImg.src = searchForKey(data, 'thumbnail')
+    }
+    else {
+      recipeImg.src = searchForKey(data, 'thumbnailUrl')
+    }
+    recipeImg.alt = searchForKey(data, 'headline')
+
+    // set title
+    recipeTitle.className = 'title'
+    titlehref.href = getUrl(data)
+    titlehref.textContent = searchForKey(data, 'headline')
+    recipeTitle.append(titlehref)
+
+    // set organization
+    recipeOrgnization.className = 'organization'
+    recipeOrgnization.textContent = getOrganization(data)
+
+    // set rating stars
+    recipeRating.className = 'rating'
+    const ratingNum = searchForKey(data, 'aggregateRating')
+    if(!ratingNum ) {   
+      ratingInfo.textContent="No Reviews"
+      recipeRating.append(ratingInfo)
+    }else {
+      ratingInfo.textContent = ratingNum.ratingValue
+      recipeComment.textContent = '('+ratingNum.ratingCount+')'
+      const star = Math.round(ratingNum.ratingValue)
+      switch(star) {
+        case 0:
+          starImg.src = 'assets/images/icons/0-star.svg'
+          starImg.alt = '0 stars'
+          break
+        case 1:
+          starImg.src = 'assets/images/icons/1-star.svg'
+          starImg.alt = '1 stars'
+          break
+        case 2:
+          starImg.src = 'assets/images/icons/2-star.svg'
+          starImg.alt = '2 stars'
+          break
+        case 3:
+          starImg.src = 'assets/images/icons/3-star.svg'
+          starImg.alt = '3 stars'
+          break
+        case 4:
+          starImg.src = 'assets/images/icons/4-star.svg'
+          starImg.alt = '4 stars'
+          break
+        case 5:
+          starImg.src = 'assets/images/icons/5-star.svg'
+          starImg.alt = '5 stars'
+          break
+      }
+      recipeRating.append(ratingInfo);
+      recipeRating.append(starImg);
+      recipeRating.append(recipeComment);       
+    }
+
+    // set cooking time
+    const time = searchForKey(data,'totalTime')
+    cookingTime.textContent = convertTime(time)
+
+    // set ingredients
+    ingredients.className = 'ingredients'
+    const singleIngredient = searchForKey(data,'recipeIngredient')
+    ingredients.textContent = createIngredientList(singleIngredient)
+
+    // append new card element to card
+    card.append(recipeImg)
+    card.append(recipeTitle)
+    card.append(recipeOrgnization)
+    card.append(recipeRating)
+    card.append(cookingTime)
+    card.append(ingredients)
   }
 }
-
 
 /*********************************************************************/
 /***                       Helper Functions:                       ***/

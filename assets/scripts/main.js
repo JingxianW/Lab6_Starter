@@ -5,7 +5,7 @@
 const recipes = [
   'https://introweb.tech/assets/json/ghostCookies.json',
   'https://introweb.tech/assets/json/birthdayCake.json',
-  'https://introweb.tech/assets/json/chocolateChip.json'
+  'https://introweb.tech/assets/json/chocolateChip.json',
 ];
 
 // Once all of the recipes that were specified above have been fetched, their
@@ -43,6 +43,16 @@ async function fetchRecipes() {
     // in the recipes folder and fetch them from there. You'll need to add their paths to the recipes array.
 
     // Part 1 Expose - TODO
+    for(let i = 0; i < recipes.length; i++){
+      fetch(recipes[i]).then(response => response.json()).then(data => {
+        recipeData[recipes[i]] = data;
+        if(Object.keys(recipeData).length != (i+1)){
+          reject(false);
+        }
+        if(i == (recipes.length - 1)){resolve(true);}
+      });
+    }
+
   });
 }
 
@@ -54,6 +64,13 @@ function createRecipeCards() {
   // show any others you've added when the user clicks on the "Show more" button.
 
   // Part 1 Expose - TODO
+
+  for (let i = 0; i < 3; i++){
+    let r = document.createElement('recipe-card');
+    let main = document.querySelector('main');
+    r.data = recipeData[recipes[i]];
+    main.appendChild(r);
+  }
 }
 
 function bindShowMore() {
