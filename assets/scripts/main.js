@@ -49,10 +49,10 @@ async function fetchRecipes() {
         if(Object.keys(recipeData).length != (i+1)){
           reject(false);
         }
-        if(i == (recipes.length - 1)){resolve(true);}
+        if(i == (recipes.length - 1))
+        {resolve(true);}
       });
     }
-
   });
 }
 
@@ -82,4 +82,15 @@ function bindShowMore() {
   // in the recipeData object where you stored them/
 
   // Part 2 Explore - TODO
+  let button = document.querySelector('button')
+  button.addEventListener('click', moreRecipe)
+
+  function moreRecipe() {
+    if(button.textContent == 'Show more') {
+      button.textContent = 'Show less'
+    }
+    else {
+      button.textContent = 'Show more'
+    }
+  }
 }
